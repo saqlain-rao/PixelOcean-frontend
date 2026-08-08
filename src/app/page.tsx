@@ -444,14 +444,8 @@ export default function Home() {
                         </div>
                         {address?.toLowerCase() === item.seller?.toLowerCase() ? (
                           <Button 
-                            onClick={async () => {
-                               try {
-                                 const toastId = toast.loading("Canceling listing...");
-                                 const { writeContractAsync } = await import("wagmi/actions"); // wait, wagmi/actions is not directly usable here. We can use another approach or just generic useWriteContract.
-                                 // Let's just use the existing listToken hook or buyToken hook? No, they have different names.
-                                 // Let's add a cancel hook at the top.
-                                 // Actually, I'll just explain to the user instead of risking a complex React hook injection.
-                               } catch (e) {}
+                            onClick={() => {
+                               toast("Cancel functionality is not implemented in UI yet.");
                             }}
                             className="bg-red-500 hover:bg-red-600 text-white font-bold shadow-md rounded-lg px-6"
                           >
