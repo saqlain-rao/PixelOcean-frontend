@@ -183,12 +183,19 @@ export default function Home() {
       }
 
       toast.loading("Confirm listing in your wallet...", { id: toastId });
-      const tx = await listToken({
+      const hash = await listToken({
         address: marketplaceAddress,
         abi: MarketplaceABI.abi,
         functionName: "listToken",
         args: [listNftAddress.trim(), BigInt(listTokenId.trim()), parseEther(listPrice.trim())]
       });
+      
+      toast.loading("Waiting for transaction to be mined...", { id: toastId });
+      if (publicClient) {
+        await publicClient.waitForTransactionReceipt({ hash });
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 15000));
+      }
       
       toast.success("NFT Listed Successfully!", { id: toastId });
       setIsListingModalOpen(false);
@@ -219,13 +226,19 @@ export default function Home() {
     }
     const toastId = toast.loading("Confirming purchase...");
     try {
-      await buyToken({
+      const hash = await buyToken({
         address: marketplaceAddress,
         abi: MarketplaceABI.abi,
         functionName: "buyToken",
         args: [nftAddress, BigInt(tokenId)],
         value: BigInt(price)
       });
+      toast.loading("Waiting for transaction to be mined...", { id: toastId });
+      if (publicClient) {
+        await publicClient.waitForTransactionReceipt({ hash });
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 15000));
+      }
       toast.success("NFT Bought Successfully!", { id: toastId });
       fetchListings(); // Refresh listings after purchase
     } catch (e: any) {
